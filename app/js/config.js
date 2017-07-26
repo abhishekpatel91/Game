@@ -1,7 +1,7 @@
 module.exports = {
     brick: {
         width: 60,
-        height: 20,
+        height: 15,
         gutterSpace: 15
     },
     ball: {
