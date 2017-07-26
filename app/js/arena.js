@@ -1,18 +1,19 @@
 var config = require('./config');
 var Brick = require('./brick');
 var Ball = require('./ball');
+var Platform = require('./platform');
 
 function Arena(canvasCtx) {
     this.canvasCtx = canvasCtx;
     this.rows = 5;
     this.cols = this.initCols();
     this.wall = this.initWall();
-    this.ball = new Ball(100, 100, 'red');
-}
-
-// Private Method
-function getRandomInt(maxInt) {
-    return Math.floor(Math.random() * maxInt);
+    this.ball = new Ball(100, 100, 'green');
+    this.platform = new Platform(
+        (this.canvasCtx.canvas.width - config.platform.width)/ 2 ,
+        this.canvasCtx.canvas.height - config.platform.height - config.platform.gutterSpace,
+        '#0080ff'
+    );
 }
 
 // Public Methods
@@ -38,12 +39,16 @@ Arena.prototype.drawBricks = function() {
                 var brick = new Brick(
                     config.brick.gutterSpace + (col * (config.brick.gutterSpace + config.brick.width)),
                     config.brick.gutterSpace + (row * (config.brick.gutterSpace + config.brick.height)),
-                    '#153546'
+                    '#fafafa'
                 );
                 brick.draw(this.canvasCtx);
             }            
         }
     }
+}
+
+Arena.prototype.drawPlatform = function() {
+    this.platform.draw(this.canvasCtx);
 }
 
 Arena.prototype.drawBall = function() {
@@ -63,15 +68,18 @@ Arena.prototype.ballCollision = function() {
     }
 }
 
-Arena.prototype.playGame = function() {
+Arena.prototype.runGame = function() {
     this.ballCollision();
     this.canvasCtx.clearRect(0, 0, this.canvasCtx.canvas.width, this.canvasCtx.canvas.height);
     this.drawBricks();
+    this.drawPlatform();
     this.drawBall();
 }
 
 Arena.prototype.startGame = function() {
-    setInterval(this.playGame.bind(this), 10);
+    // this.drawPlatform();
+    // this.drawBall();
+    setInterval(this.runGame.bind(this), 10);
 }
 
 module.exports = Arena;

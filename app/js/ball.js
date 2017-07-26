@@ -4,8 +4,8 @@ function Ball(xPos, yPos, fillStyle) {
     this.xPos = xPos;
     this.yPos = yPos;
     this.fillStyle = fillStyle ? fillStyle : '#000';
-    this.deltaX = -3;
-    this.deltaY = 3;
+    this.deltaX = -2;
+    this.deltaY = 2;
 }
 
 // Public Methods

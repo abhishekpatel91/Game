@@ -5,6 +5,11 @@ module.exports = {
         gutterSpace: 15
     },
     ball: {
-        radius: 6
+        radius: 8
+    },
+    platform: {
+        height: 5,
+        width: 100,
+        gutterSpace: 5
     }
 }

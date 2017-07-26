@@ -13,5 +13,4 @@ canvas.setAttribute('height', container.offsetHeight);
 var ctx = canvas.getContext('2d');
 var arena = new Arena(ctx);
 
-// arena.drawBricks();
 arena.startGame();
