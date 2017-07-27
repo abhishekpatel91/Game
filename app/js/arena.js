@@ -98,8 +98,6 @@ Arena.prototype.brickCollision = function(futureX, futureY) {
         }
     }
     if (flag) {
-        console.log(col, ' | ', row);
-        debugger;
         this.ball.reverseY();
     }
 }
@@ -125,7 +123,7 @@ Arena.prototype.runGame = function() {
 }
 
 Arena.prototype.startGame = function() {
-    setInterval(this.runGame.bind(this), 10);
+    setInterval(this.runGame.bind(this), 5);
 }
 
 Arena.prototype.initDOMEvents = function() {
