@@ -5,18 +5,17 @@ var Platform = require('./platform');
 
 function Arena(canvasCtx) {
     this.canvasCtx = canvasCtx;
-    this.ball = new Ball(100, 100, 'green');
-    this.platform = new Platform(
-        (this.canvasCtx.canvas.width - config.platform.width)/ 2 ,
-        this.canvasCtx.canvas.height - config.platform.height - config.platform.gutterSpace,
-        '#0080ff'
-    );
-    this.rows = 4;
+    this.rows = 6;
     this.cols = this.initCols();
     this.wall = this.initWall();
     this.movePlatformR = false;
     this.movePlatformL = false;
-
+    this.ball = new Ball(1100, 400, '#FF4500');
+    this.platform = new Platform(
+        (this.canvasCtx.canvas.width - config.platform.width)/ 2 ,
+        this.canvasCtx.canvas.height - config.platform.height - config.platform.gutterSpace,
+        '#0080ff'
+    );    
     this.initDOMEvents();
 }
 
@@ -36,7 +35,7 @@ Arena.prototype.initWall = function() {
     return arr;
 }
 
-Arena.prototype.drawBricks = function() {
+Arena.prototype.drawBricks = function(futureX, futureY) {
     for (var row = 0; row < this.rows; row++) {
         for (var col = 0; col < this.cols; col++) {
             if (this.wall[row][col]) {
@@ -45,7 +44,7 @@ Arena.prototype.drawBricks = function() {
                     config.brick.gutterSpace + (row * (config.brick.gutterSpace + config.brick.height)),
                     '#fafafa'
                 );
-                brick.draw(this.canvasCtx);
+                brick.draw(this.canvasCtx);             
             }            
         }
     }
@@ -62,6 +61,7 @@ Arena.prototype.collision = function() {
     var futureY = ballPos.y + ballSpeed.deltaY;
     this.wallCollision(futureX, futureY);
     this.platformCollision(futureX, futureY);
+    this.brickCollision(futureX, futureY);
 }
 
 Arena.prototype.wallCollision = function(futureX, futureY) {
@@ -75,6 +75,31 @@ Arena.prototype.wallCollision = function(futureX, futureY) {
 
 Arena.prototype.platformCollision = function(futureX, futureY) {
     if (futureX + config.ball.radius > this.platform.getXPosition() && (futureX - config.ball.radius < this.platform.getXPosition() + config.platform.width) && (futureY + config.ball.radius > this.canvasCtx.canvas.height - config.platform.height - config.platform.gutterSpace)) {
+        this.ball.reverseY();
+    }
+}
+
+Arena.prototype.brickCollision = function(futureX, futureY) {
+    var flag = false;
+    for (var row = 0; row < this.rows; row++) {
+        for (var col = 0; col < this.cols; col++) {
+            var leftCollision = (futureX + config.ball.radius) >= (config.brick.gutterSpace + (col * (config.brick.gutterSpace + config.brick.width)));
+            var RightCollision = (futureX - config.ball.radius) <= (config.brick.gutterSpace + config.brick.width + (col * (config.brick.gutterSpace + config.brick.width)));
+            var topCollsion = (futureY + config.ball.radius) >= (config.brick.gutterSpace + (row * (config.brick.gutterSpace + config.brick.height)));
+            var bottomCollsion = (futureY - config.ball.radius) <= (config.brick.gutterSpace + config.brick.height + (row * (config.brick.gutterSpace + config.brick.height)));
+            if (this.wall[row][col] && leftCollision && RightCollision && topCollsion && bottomCollsion) {
+                this.wall[row][col] = false;
+                flag = true;
+                break;
+            }
+        }
+        if (flag) {
+            break;
+        }
+    }
+    if (flag) {
+        console.log(col, ' | ', row);
+        debugger;
         this.ball.reverseY();
     }
 }
